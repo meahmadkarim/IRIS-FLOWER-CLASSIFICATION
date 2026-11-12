@@ -32,3 +32,18 @@ The original notebook is retained as a learning artefact. Cleared notebook outpu
 ## Verified run
 
 Python 3.12, the pinned direct dependencies and included CSV: 30 held-out rows, accuracy 0.90 versus a most-frequent baseline of 0.3333 (seed 42). This is a small single-split demonstration, not a general performance guarantee.
+
+## Model, libraries and data flow
+
+This is supervised **random-forest classification**, not K-means clustering. The inputs are sepal length, sepal width, petal length and petal width; the target is the species label.
+
+| Component | Implementation and purpose |
+| --- | --- |
+| pandas | Reads `IRIS.csv`, selects measurement columns and species labels; the notebook checks missing values and data types. |
+| Seaborn + Matplotlib | The original notebook uses `sns.pairplot(..., hue='species')` and `plt.show()` to compare measurement relationships across species. The CLI does not generate plots. |
+| scikit-learn split | The maintained CLI uses an 80/20 stratified split with `random_state=42`, preserving species proportions. |
+| Preprocessing | `SimpleImputer(strategy='median')` is fitted within a `Pipeline` on training rows only. |
+| Model | `RandomForestClassifier(n_estimators=100, random_state=42)` combines decision trees to predict species. |
+| Evaluation | Accuracy and per-class precision, recall and F1; `DummyClassifier(strategy='most_frequent')` supplies a comparison. The historical notebook also prints a confusion matrix. |
+
+The maintained CLI adds stratification, train-only imputation and the dummy baseline to the original notebook workflow.
